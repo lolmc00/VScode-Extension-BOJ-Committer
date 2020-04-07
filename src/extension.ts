@@ -17,7 +17,7 @@ const crawl = (num:number): Promise<string> => {
     let result: Promise<string> = new Promise<string>((resolve, reject) => {
         request.get(address, (err, res) => {
             if (err !== null && err !== undefined) {
-                console.log(err + "dsadsa");
+                console.log(err);
                 reject(err);
             } else {
                 resolve(res.body);
