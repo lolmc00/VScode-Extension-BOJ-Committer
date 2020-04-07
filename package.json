@@ -2,7 +2,8 @@
 	"name": "boj-committer",
 	"displayName": "BOJ Committer",
 	"description": "",
-	"version": "0.0.1",
+    "version": "0.0.1",
+    "publisher": "lolmc",
 	"engines": {
 		"vscode": "^1.43.0"
 	},
