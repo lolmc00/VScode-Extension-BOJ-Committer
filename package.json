@@ -20,7 +20,14 @@
 				"command": "extension.BOJCommitter",
 				"title": "[BOJ Committer] Commit My source"
 			}
-		]
+        ],
+        "keybindings": [
+            {
+                "command": "extension.BOJCommitter",
+                "key": "ctrl+alt+G",
+                "mac": "shift+cmd+G"
+            }
+        ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
