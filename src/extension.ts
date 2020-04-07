@@ -45,6 +45,10 @@ const getDestination = (path: string): vscode.Uri => {
     return result;
 };
 
+const checkPath = (path: string): Boolean => {
+    return path.includes("\\unsolved");
+};
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -58,21 +62,23 @@ export function activate(context: vscode.ExtensionContext) {
     // The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.BOJCommitter', () => {
         // The code you place here will be executed every time your command is executed
-        if (vscode.window.activeTextEditor !== undefined){
+        if (vscode.window.activeTextEditor !== undefined && checkPath(vscode.window.activeTextEditor.document.uri.fsPath)){
             let activeTextEditor: vscode.TextEditor = vscode.window.activeTextEditor;
             let problemNumber: number = getNumber(activeTextEditor.document.uri.fsPath);
             vscode.commands.executeCommand('workbench.action.files.save').then(() => {
                 getTitle(problemNumber).then(title => {
                     let destination: vscode.Uri = getDestination(activeTextEditor.document.uri.fsPath);
                     vscode.workspace.fs.copy(activeTextEditor.document.uri, destination, { overwrite: true }).then(() => {
-                        vscode.workspace.openTextDocument(destination).then((document: vscode.TextDocument) => {
-                            vscode.window.showTextDocument(document, 1, false).then(() => {
-                                vscode.commands.executeCommand("git.refresh").then(() => {
-                                    vscode.commands.executeCommand('git.stage').then(() => {
-                                        const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
-                                        const git = gitExtension?.getAPI(1);
-                                        git?.repositories[0].commit(title).then(() => {
-                                            vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+                        vscode.workspace.fs.delete(activeTextEditor.document.uri).then(() => {
+                            vscode.workspace.openTextDocument(destination).then((document: vscode.TextDocument) => {
+                                vscode.window.showTextDocument(document, 1, false).then(() => {
+                                    vscode.commands.executeCommand("git.refresh").then(() => {
+                                        vscode.commands.executeCommand('git.stage').then(() => {
+                                            const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
+                                            const git = gitExtension?.getAPI(1);
+                                            git?.repositories[0].commit(title).then(() => {
+                                                vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+                                            });
                                         });
                                     });
                                 });
@@ -80,9 +86,11 @@ export function activate(context: vscode.ExtensionContext) {
                         });
                     });
                 }).catch(err => {
-                    vscode.window.showInformationMessage(err);
+                    vscode.window.showErrorMessage(err);
                 });
             });
+        }else{
+            vscode.window.showErrorMessage("[BOJ Committer] 에디터에 unsolved 폴더안에 있는 커밋시킬 소스 파일을 켜고 실행해주세요.");
         }
 	});
 
