@@ -50,12 +50,11 @@ const checkPath = (path: string): Boolean => {
     return path.includes("\\unsolved");
 };
 
-const checkSolvedPath = (path: string): Boolean =>{
-    return fs.existsSync(path);
-};
-
-const checkEXEFile = (originPath: string): Boolean => {
-    return fs.existsSync(originPath);
+const getEXEUri = (originPath: string): vscode.Uri => {
+    let splited: string[] = originPath.split("\\");
+    let fileName: string = splited[splited.length - 1];
+    let exeFileName: string = fileName.replace(fileName.split(".")[1], "exe");
+    return vscode.Uri.file(originPath.replace(fileName, exeFileName));
 };
 
 const getSolvedPathUri = (path: string): vscode.Uri => {
@@ -67,9 +66,9 @@ const changeDirectorySource = (originUri: vscode.Uri, destinationUri: vscode.Uri
         try{
             vscode.workspace.fs.copy(originUri, destinationUri, { overwrite: true }).then(() => {
                 vscode.workspace.fs.delete(originUri).then(() => {
-                    let exeOrigin: vscode.Uri = vscode.Uri.file(originUri.fsPath.replace(".cpp", ".exe"));
+                    let exeOrigin: vscode.Uri = getEXEUri(originUri.fsPath);
                     let exeDestination: vscode.Uri = getDestination(exeOrigin.fsPath);
-                    if (checkEXEFile(exeOrigin.fsPath)){
+                    if (fs.existsSync(exeOrigin.fsPath)){
                         vscode.workspace.fs.copy(exeOrigin, exeDestination, { overwrite: true }).then(() => {
                             vscode.workspace.fs.delete(exeOrigin).then(() => {
                                 resolve();
@@ -152,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
                 getTitle(problemNumber).then(title => {
                     let origin: vscode.Uri = activeTextEditor.document.uri;
                     let destination: vscode.Uri = getDestination(origin.fsPath);
-                    if (!checkSolvedPath(destination.fsPath)) {
+                    if (!fs.existsSync(destination.fsPath)) {
                         vscode.workspace.fs.createDirectory(getSolvedPathUri(destination.fsPath)).then(()=> {
                             process(origin, destination, title, title);
                         });
