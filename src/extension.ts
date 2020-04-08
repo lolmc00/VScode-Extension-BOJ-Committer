@@ -150,32 +150,11 @@ export function activate(context: vscode.ExtensionContext) {
             let problemNumber: number = getNumber(activeTextEditor.document.uri.fsPath);
             vscode.commands.executeCommand('workbench.action.files.save').then(() => {
                 getTitle(problemNumber).then(title => {
-<<<<<<< Updated upstream
-                    let destination: vscode.Uri = getDestination(activeTextEditor.document.uri.fsPath);
-                    vscode.workspace.fs.copy(activeTextEditor.document.uri, destination, { overwrite: true }).then(() => {
-                        vscode.workspace.fs.delete(activeTextEditor.document.uri).then(() => {
-                            vscode.workspace.openTextDocument(destination).then((document: vscode.TextDocument) => {
-                                vscode.window.showTextDocument(document, 1, false).then(() => {
-                                    vscode.commands.executeCommand("list.collapse").then(() => {
-                                        vscode.commands.executeCommand("git.refresh").then(() => {
-                                            vscode.commands.executeCommand('git.stage').then(() => {
-                                                const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
-                                                const git = gitExtension?.getAPI(1);
-                                                git?.repositories[0].commit(title).then(() => {
-                                                    vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
-                                                });
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-=======
                     let origin: vscode.Uri = activeTextEditor.document.uri;
                     let destination: vscode.Uri = getDestination(origin.fsPath);
                     if (!checkSolvedPath(destination.fsPath)) {
                         vscode.workspace.fs.createDirectory(getSolvedPathUri(destination.fsPath)).then(()=> {
                             process(origin, destination, title, title);
->>>>>>> Stashed changes
                         });
                     }else{
                         process(origin, destination, title, title);
