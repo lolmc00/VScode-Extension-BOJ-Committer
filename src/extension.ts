@@ -72,12 +72,14 @@ export function activate(context: vscode.ExtensionContext) {
                         vscode.workspace.fs.delete(activeTextEditor.document.uri).then(() => {
                             vscode.workspace.openTextDocument(destination).then((document: vscode.TextDocument) => {
                                 vscode.window.showTextDocument(document, 1, false).then(() => {
-                                    vscode.commands.executeCommand("git.refresh").then(() => {
-                                        vscode.commands.executeCommand('git.stage').then(() => {
-                                            const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
-                                            const git = gitExtension?.getAPI(1);
-                                            git?.repositories[0].commit(title).then(() => {
-                                                vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+                                    vscode.commands.executeCommand("list.collapse").then(() => {
+                                        vscode.commands.executeCommand("git.refresh").then(() => {
+                                            vscode.commands.executeCommand('git.stage').then(() => {
+                                                const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
+                                                const git = gitExtension?.getAPI(1);
+                                                git?.repositories[0].commit(title).then(() => {
+                                                    vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+                                                });
                                             });
                                         });
                                     });
