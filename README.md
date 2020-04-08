@@ -16,8 +16,7 @@
 
 1. [Extension을 설치](https://marketplace.visualstudio.com/items?itemName=lolmc00.boj-committer)합니다.
 
-2. 본인이 문제를 저장해둘 폴더에 Repository를 생성해주시고, `solved` 폴더와
-`unsolved` 폴더를 생성해주세요.
+2. 본인이 문제를 저장해둘 폴더에 Repository를 생성해주시고, `unsolved` 폴더를 생성해주세요.
 
 3. `unsolved` 폴더에 자신이 풀 문제의 소스파일을 `BOJ문제번호.확장자`의 형태로 생성해주세요.
 

@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { API as GitAPI, GitExtension, APIState } from './api/git';
 import request from 'request';
 import cheerio from 'cheerio';
+import fs from 'fs';
 
 const getNumber = (path: string): number => {
     let splited = path.split('\\');
@@ -49,6 +50,88 @@ const checkPath = (path: string): Boolean => {
     return path.includes("\\unsolved");
 };
 
+const checkSolvedPath = (path: string): Boolean =>{
+    return fs.existsSync(path);
+};
+
+const checkEXEFile = (originPath: string): Boolean => {
+    return fs.existsSync(originPath);
+};
+
+const getSolvedPathUri = (path: string): vscode.Uri => {
+    return vscode.Uri.file(path.split("\\solved")[0].concat("\\solved"));
+};
+
+const changeDirectorySource = (originUri: vscode.Uri, destinationUri: vscode.Uri): Promise<void> =>{
+    return new Promise<void>((resolve, reject) => {
+        try{
+            vscode.workspace.fs.copy(originUri, destinationUri, { overwrite: true }).then(() => {
+                vscode.workspace.fs.delete(originUri).then(() => {
+                    let exeOrigin: vscode.Uri = vscode.Uri.file(originUri.fsPath.replace(".cpp", ".exe"));
+                    let exeDestination: vscode.Uri = getDestination(exeOrigin.fsPath);
+                    if (checkEXEFile(exeOrigin.fsPath)){
+                        vscode.workspace.fs.copy(exeOrigin, exeDestination, { overwrite: true }).then(() => {
+                            vscode.workspace.fs.delete(exeOrigin).then(() => {
+                                resolve();
+                            });
+                        });
+                    }else{
+                        resolve();
+                    }
+                });
+            });
+        }catch{
+            reject;
+        }
+    });
+};
+
+const openTextDocument = (uri: vscode.Uri): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+        try{
+            vscode.workspace.openTextDocument(uri).then((document: vscode.TextDocument) => {
+                vscode.window.showTextDocument(document, 1, false).then(() => {
+                    resolve();
+                });
+            });
+        }catch{
+            reject();
+        }
+    });
+};
+
+const commitAndPush = (commitMessage: string): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
+        try{
+            vscode.commands.executeCommand("git.refresh").then(() => {
+                vscode.commands.executeCommand('git.stage').then(() => {
+                    const gitExtension = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports;
+                    const git = gitExtension?.getAPI(1);
+                    git?.repositories[0].commit(commitMessage).then(() => {
+                        resolve();
+                    });
+                });
+            });
+        }catch{
+            reject();
+        }
+    });
+};
+
+const process = (origin: vscode.Uri, destination: vscode.Uri, commitMessage: string, title: string): void => {
+    changeDirectorySource(origin, destination).then(() => {
+        openTextDocument(destination).then(() => {
+            commitAndPush(commitMessage).then(() => {
+                vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+            });
+        }).catch(() => {
+            vscode.window.showErrorMessage("[BOJ Committer] 파일을 여는 도중 에러가 발생하였습니다.");
+        });
+    }).catch(() => {
+        vscode.window.showErrorMessage("[BOJ Committer] 파일을 옮기는 도중 에러가 발생하였습니다.");
+    });
+};
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -67,6 +150,7 @@ export function activate(context: vscode.ExtensionContext) {
             let problemNumber: number = getNumber(activeTextEditor.document.uri.fsPath);
             vscode.commands.executeCommand('workbench.action.files.save').then(() => {
                 getTitle(problemNumber).then(title => {
+<<<<<<< Updated upstream
                     let destination: vscode.Uri = getDestination(activeTextEditor.document.uri.fsPath);
                     vscode.workspace.fs.copy(activeTextEditor.document.uri, destination, { overwrite: true }).then(() => {
                         vscode.workspace.fs.delete(activeTextEditor.document.uri).then(() => {
@@ -85,8 +169,17 @@ export function activate(context: vscode.ExtensionContext) {
                                     });
                                 });
                             });
+=======
+                    let origin: vscode.Uri = activeTextEditor.document.uri;
+                    let destination: vscode.Uri = getDestination(origin.fsPath);
+                    if (!checkSolvedPath(destination.fsPath)) {
+                        vscode.workspace.fs.createDirectory(getSolvedPathUri(destination.fsPath)).then(()=> {
+                            process(origin, destination, title, title);
+>>>>>>> Stashed changes
                         });
-                    });
+                    }else{
+                        process(origin, destination, title, title);
+                    }
                 }).catch(err => {
                     vscode.window.showErrorMessage(err);
                 });
