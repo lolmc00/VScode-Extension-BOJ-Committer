@@ -1,8 +1,8 @@
 {
-	"name": "boj-committer",
-	"displayName": "BOJ Committer",
+	"name": "boj-helper",
+	"displayName": "BOJ Helper",
 	"description": "",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "lolmc00",
 	"engines": {
 		"vscode": "^1.43.0"
@@ -12,7 +12,7 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.BOJTest",
-		"onCommand:extension.BOJCommitter"
+		"onCommand:extension.BOJCommit"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -22,13 +22,13 @@
 				"title": "[BOJ Committer] Run Testcase(s)"
 			},
 			{
-				"command": "extension.BOJCommitter",
+				"command": "extension.BOJCommit",
 				"title": "[BOJ Committer] Commit My source"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "extension.BOJCommitter",
+				"command": "extension.BOJCommit",
 				"key": "ctrl+alt+G",
 				"mac": "shift+cmd+G"
 			},

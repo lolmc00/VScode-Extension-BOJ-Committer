@@ -1,4 +1,4 @@
-# BOJ-Committer
+# BOJ-Helper
 
 해당 확장자는 [백준 온라인 저지](https://www.acmicpc.net/)에서 문제 Test Case 실행 결과 확인과 문제를 푼 후 소스 Staging과 Commit을 단축키를 통해 한 번에 할 수 있도록 도와주는 [Visual Studio Code](https://code.visualstudio.com/) Extension입니다.
 

@@ -59,7 +59,7 @@ const changeDirectorySource = (originUri: vscode.Uri, destinationUri: vscode.Uri
                 });
             });
         }catch{
-            reject;
+            reject();
         }
     });
 };
@@ -67,15 +67,15 @@ const changeDirectorySource = (originUri: vscode.Uri, destinationUri: vscode.Uri
 const process = (origin: vscode.Uri, destination: vscode.Uri, commitMessage: string, fileName: string, title: string): void => {
     changeDirectorySource(origin, destination).then(() => {
         addAndCommit(destination.fsPath, fileName, commitMessage);
-        vscode.window.showInformationMessage(`[BOJ Committer] Completed (Problem: ${title})`);
+        vscode.window.showInformationMessage(`[BOJ Helper] Completed (Problem: ${title})`);
     }).catch(() => {
-        vscode.window.showErrorMessage("[BOJ Committer] 파일을 옮기는 도중 에러가 발생하였습니다.");
+        vscode.window.showErrorMessage("[BOJ Helper] 파일을 옮기는 도중 에러가 발생하였습니다.");
     });
 };
 
 export function activate(context: vscode.ExtensionContext) {
     
-	let disposable = vscode.commands.registerCommand('extension.BOJCommitter', () => {
+	let disposable = vscode.commands.registerCommand('extension.BOJCommit', () => {
         if (vscode.window.activeTextEditor !== undefined && checkPath(vscode.window.activeTextEditor.document.uri.fsPath)){
             
             let activeTextEditor: vscode.TextEditor = vscode.window.activeTextEditor;
@@ -100,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
                 });
             });
         }else{
-            vscode.window.showErrorMessage("[BOJ Committer] unsolved 폴더안에 있는 커밋시킬 소스 파일을 켜고 실행해주세요.");
+            vscode.window.showErrorMessage("[BOJ Helper] unsolved 폴더안에 있는 커밋시킬 소스 파일을 켜고 실행해주세요.");
         }
     });
     let test = vscode.commands.registerCommand('extension.BOJTest', () => {
@@ -148,7 +148,7 @@ export function activate(context: vscode.ExtensionContext) {
                 });
             });
         }else{
-            vscode.window.showErrorMessage("[BOJ Committer] unsolved 폴더안에 있는 커밋시킬 소스 파일을 켜고 실행해주세요.");
+            vscode.window.showErrorMessage("[BOJ Helper] unsolved 폴더안에 있는 커밋시킬 소스 파일을 켜고 실행해주세요.");
         }
     });
     context.subscriptions.push(test);
