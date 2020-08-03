@@ -2,8 +2,8 @@
 	"name": "boj-committer",
 	"displayName": "BOJ Committer",
 	"description": "",
-    "version": "0.0.1",
-    "publisher": "lolmc00",
+	"version": "0.0.1",
+	"publisher": "lolmc00",
 	"engines": {
 		"vscode": "^1.43.0"
 	},
@@ -11,23 +11,33 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onCommand:extension.BOJTest",
 		"onCommand:extension.BOJCommitter"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
+				"command": "extension.BOJTest",
+				"title": "[BOJ Committer] Run Testcase(s)"
+			},
+			{
 				"command": "extension.BOJCommitter",
 				"title": "[BOJ Committer] Commit My source"
 			}
-        ],
-        "keybindings": [
-            {
-                "command": "extension.BOJCommitter",
-                "key": "ctrl+alt+G",
-                "mac": "shift+cmd+G"
-            }
-        ]
+		],
+		"keybindings": [
+			{
+				"command": "extension.BOJCommitter",
+				"key": "ctrl+alt+G",
+				"mac": "shift+cmd+G"
+			},
+			{
+				"command": "extension.BOJTest",
+				"key": "ctrl+alt+T",
+				"mac": "shift+cmd+T"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -56,11 +66,16 @@
 		"vscode.git"
 	],
 	"dependencies": {
+		"@types/got": "^9.6.11",
+		"@types/tmp": "^0.2.0",
 		"cheerio": "^1.0.0-rc.3",
+		"fs": "0.0.1-security",
+		"got": "^11.5.1",
+		"loader": "^2.1.1",
 		"request": "^2.88.2"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/lolmc00/VScode-Extension-BOJ-Committer"
-    }
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lolmc00/VScode-Extension-BOJ-Committer"
+	}
 }
