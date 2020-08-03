@@ -1,0 +1,14 @@
+{
+    "C++14": {
+        "compile": "g++ %SOURCE_FILE% -o %SOURCE_DIR%\\Main -O2 -Wall -lm -static -std=gnu++14 -DONLINE_JUDGE -DBOJ",
+        "execute": "%SOURCE_DIR%\\Main"
+    },
+    "C": {
+        "compile": "gcc %SOURCE_FILE% -o %SOURCE_DIR%\\Main -O2 -Wall -lm -static -std=c99 -DONLINE_JUDGE -DBOJ",
+        "execute": "%SOURCE_DIR%\\Main"
+    },
+    "Python3": {
+        "compile": "python -c \"import py_compile; py_compile.compile(r'%SOURCE_FILE%')\"",
+        "execute": "python %SOURCE_FILE%"
+    }
+}
