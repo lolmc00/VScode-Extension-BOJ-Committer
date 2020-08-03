@@ -113,9 +113,14 @@ export function activate(context: vscode.ExtensionContext) {
 
             vscode.commands.executeCommand('workbench.action.files.save').then(() => {
                 BOJ.getProblemData(problemNumber).then(problem => {
+                    if(problem.isSpecailJudge){
+                        vscode.window.showInformationMessage("스페셜 저지 문제는 테스트 케이스 결과를 확인할 수 없습니다.");
+                        return;
+                    }
+
                     let extension:Extension = getExtension(filePath);
                     let result = Executor.test(extension, filePath + "\\..", fileName, problem.testCases);
-                    let outputChannel = vscode.window.createOutputChannel("Tests Result");
+                    let outputChannel = vscode.window.createOutputChannel("Test(s) Result");
                     let isAllCorrect = true;
                     for(let i = 0; i < result.length; i++){
                         if(result[i].isCorrect === false){
@@ -124,7 +129,7 @@ export function activate(context: vscode.ExtensionContext) {
                         }
                     }
                     outputChannel.appendLine(`Problem: ${problem.title}(${problem.id})\n`);
-                    outputChannel.appendLine(`Total Results: ${isAllCorrect ? "Correct\n" : "Incorect\n"}`);
+                    outputChannel.appendLine(`Total Result(s): ${isAllCorrect ? "Correct\n" : "Incorect\n"}`);
                     for(let i = 0; i < result.length; i++){
                         outputChannel.appendLine(`# Test Case ${(i + 1)}:`);
                         if(result[i].isOccurError){

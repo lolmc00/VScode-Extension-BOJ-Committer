@@ -20,6 +20,11 @@ export const getProblemData = (num: number): Promise<Problem> => {
         crawl(num).then((body) => {
             let $ = cheerio.load(body);
             let title: string = $('#problem_title').text();
+            let isSpecialJudge:boolean = false;
+            if ($('.label-info').length > 0){
+                isSpecialJudge =$('.label-info').text() === "스페셜 저지";
+            }
+
             let testCases: Array<TestCase> = new Array<TestCase>();
             for(var i = 1;;i++){
                 if ($("#sample-input-" + i).length === 0) { break; }
@@ -27,7 +32,7 @@ export const getProblemData = (num: number): Promise<Problem> => {
                 let output: string = $("#sample-output-" + i).text();
                 testCases.push(new TestCase(input, output));
             }
-            let problemData: Problem = new Problem(num, title, testCases);
+            let problemData: Problem = new Problem(num, title, isSpecialJudge, testCases);
             resolve(problemData);
         }).catch(err => {
             reject(err);

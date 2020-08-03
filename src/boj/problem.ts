@@ -1,6 +1,6 @@
 
 export class Problem {
-    constructor(public id: number, public title: string, public testCases: Array<TestCase>) {}
+    constructor(public id: number, public title: string, public isSpecailJudge: boolean, public testCases: Array<TestCase>) {}
 }
 
 export class TestCase {
