@@ -66,8 +66,11 @@ const changeDirectorySource = (originUri: vscode.Uri, destinationUri: vscode.Uri
 
 const process = (origin: vscode.Uri, destination: vscode.Uri, commitMessage: string, fileName: string, title: string): void => {
     changeDirectorySource(origin, destination).then(() => {
-        addAndCommit(destination.fsPath, fileName, commitMessage);
-        vscode.window.showInformationMessage(`[BOJ Helper] Completed (Problem: ${title})`);
+        addAndCommit(destination.fsPath, fileName, commitMessage).then(() => {
+            vscode.window.showInformationMessage(`[BOJ Helper] Completed (Problem: ${title})`);
+        }).catch((error) => {
+            vscode.window.showErrorMessage(`[BOJ Helper] ${error}`);
+        });
     }).catch(() => {
         vscode.window.showErrorMessage("[BOJ Helper] 파일을 옮기는 도중 에러가 발생하였습니다.");
     });
