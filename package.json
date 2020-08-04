@@ -2,7 +2,7 @@
 	"name": "boj-helper",
 	"displayName": "BOJ Helper",
 	"description": "",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "lolmc00",
 	"engines": {
 		"vscode": "^1.43.0"
